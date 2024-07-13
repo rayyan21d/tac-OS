@@ -2,6 +2,7 @@
 
 global _start
 extern kernel_main
+global problem 
 
 CODE_SEG equ 0x08
 DATA_SEG equ 0x10
@@ -23,5 +24,9 @@ _start:
 
     call kernel_main
     jmp $
+
+problem: 
+    ;For demo purposes 
+    int 0
 
 times 512-($-$$) db 0

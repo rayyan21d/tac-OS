@@ -1,21 +1,25 @@
 #include "kernel.h"
 #include <stdint.h>
 #include <stddef.h>
+#include "idt/idt.h"
 
 uint16_t* video_mem = 0;
 uint16_t row = 0;
 uint16_t col = 0;
 
-uint16_t make_char(char c, char color){
+uint16_t make_char(char c, char color)
+{
     return (color << 8) | c;
 }
 
-void putchar( int x, int y, char c, char color ){
+void putchar( int x, int y, char c, char color )
+{
     video_mem[ (y * VGA_WIDTH) + x ] = make_char(c, color);
 
 }
 
-void write_char(char c, char color){
+void write_char(char c, char color)
+{
 
     if(c == '\n'){
         col = 0;
@@ -34,7 +38,8 @@ void write_char(char c, char color){
 }
 
 
-void initialize_vga(){
+void initialize_vga()
+{
 
     video_mem = (uint16_t*)(0xB8000);
     row = 0; col = 0;
@@ -48,7 +53,8 @@ void initialize_vga(){
     }
 }
 
-size_t strlen( const char* str){
+size_t strlen( const char* str)
+{
     size_t len=0;
     while(str[len]){
         len++;
@@ -59,18 +65,24 @@ size_t strlen( const char* str){
         
 }
 
+void print(const char* str)
+{
+    size_t len = strlen(str);
+    for(int i=0; i<len; i++){
+        write_char(str[i], 4);
+    }
+}
 
-
+extern void problem();
 
 void kernel_main()
 {
-    char msg[] = "\n Hello and Welcome to my OS!\n\n This is a simple VGA driver";
     initialize_vga();
-    for(int i=0; i< sizeof(msg)/sizeof(msg[0]) ; i++){
+    print("\n Hello and Welcome to my OS!\n\n This is a simple VGA driver.\n ");
 
-        write_char(msg[i], 4);
+    // Initialize the interrupt descriptor table
+    idt_init();
 
-    }
-
+    problem();
 
 }

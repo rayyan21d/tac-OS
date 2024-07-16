@@ -25,8 +25,6 @@ _start:
     call kernel_main
     jmp $
 
-problem: 
-    ;For demo purposes 
-    int 0
+
 
 times 512-($-$$) db 0

@@ -3,6 +3,7 @@
 #include <stddef.h>
 #include "idt/idt.h"
 #include"io/io.h"
+#include "memory/heap/kheap.h"
 
 uint16_t* video_mem = 0;
 uint16_t row = 0;
@@ -81,6 +82,9 @@ void kernel_main()
     initialize_vga();
     print("\n Hello and Welcome to my OS!\n\n This is a simple VGA driver.\n ");
 
+    // Initialize the heap
+    kheap_init();
+    
     // Initialize the interrupt descriptor table
     idt_init();
     enable_interrupts();

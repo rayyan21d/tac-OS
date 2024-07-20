@@ -83,8 +83,8 @@ void kernel_main()
 
     // Initialize the interrupt descriptor table
     idt_init();
+    enable_interrupts();
 
-    // Trying the 
-    out_byte(0x60, 0xff);
+
 
 }

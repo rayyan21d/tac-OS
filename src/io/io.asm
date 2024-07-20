@@ -36,7 +36,7 @@ out_byte:
     mov ebp, esp
 
     mov eax, [ebp+12]
-    mov edx, [edx+8]
+    mov edx, [ebp+8]
     out dx, al
 
     pop ebp

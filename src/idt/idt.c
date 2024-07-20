@@ -2,6 +2,7 @@
 #include "config.h"
 #include "memory/memory.h"
 #include "kernel.h"
+#include "io/io.h"
 
 struct idt_descriptor idt_descriptors[ryOS_TOTAL_INTERRUPTS];
 struct idtr_descriptor idtr_descriptor;
@@ -11,6 +12,20 @@ void idt_zero(){
 
     print("Division by zero exception\n");
 
+}
+
+extern void int21h();
+extern void no_interrupt();
+
+void int21h_handler()
+{
+    print("Keyboard pressed!\n");
+    out_byte(0x20, 0x20);
+}
+
+void no_interrupt_handler()
+{
+    out_byte(0x20, 0x20);
 }
 
 void idt_set(int interrupt_no, void* address)
@@ -33,7 +48,14 @@ void idt_init()
     idtr_descriptor.limit = sizeof(idt_descriptors) - 1;
     idtr_descriptor.base = (uint32_t) idt_descriptors;
 
+    // Set all interrupts to no_interrupt
+    for(int i=0; i<ryOS_TOTAL_INTERRUPTS; i++)
+    {
+        idt_set(i, no_interrupt);
+    }
+
     idt_set(0, idt_zero);
+    idt_set(0x20, int21h);
 
     // Load the interrupt descriptor table
     idt_load(&idtr_descriptor);
